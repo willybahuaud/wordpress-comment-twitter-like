@@ -33,6 +33,18 @@
 
 .ctl-button{
     border:none;
+    color:#222;
     background:#ddd;
     padding:0.25em 0.5em;
+}
+.ctl-button:hover,
+.ctl-button:focus,
+.ctl-button:active{
+    color:#e2e2e2;
+    border:none;
+    padding:0.25em 0.5em;
+    background:#444
+}
+.prevent-elem{
+    background:#cecece;
 }

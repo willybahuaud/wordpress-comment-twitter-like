@@ -15,8 +15,24 @@ jQuery(document).ready(function($){
 
     //SCROLL TO LAST COMMS
     $('.ctl-button').on('click',function(){
-        var $prev = $('.ctl-author[data-name="' + $(this).attr('data-cible') +'"]:eq(0)');
+        $('.fired').removeClass('fired');
+        $('.prevent-elem').removeClass('prevent-elem');
 
-        $('body,html').animate({scrollTop:$prev.offset().top}, 200);
+        var cible = $(this).attr('data-cible');
+        var $elems = $('.ctl-author');
+
+        var $clui = null;
+
+        $(this).parent('.ctl-author').addClass('fired');
+
+        $elems.each(function(index){
+            if($(this).hasClass('fired') || index == $elems.length-1){
+                $clui.addClass('prevent-elem');
+                $('body,html').animate({scrollTop:$clui.offset().top-200}, 200);
+                return false;
+            }
+            if($(this).attr('data-name') == cible)
+                $clui = $(this);
+        });
     });
 });

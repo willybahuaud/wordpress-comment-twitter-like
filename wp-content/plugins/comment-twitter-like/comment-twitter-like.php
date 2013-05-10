@@ -48,7 +48,7 @@ function ctl_modify_comment_text( $content, $com ) {
     //Rearrange content
     $modifiedcontent = preg_replace_callback('/\@([a-zA-Z0-9-]*)/', 'ctl_comment_callback', $content);
 
-    return '<span class="ctl-author" data-name="' . sanitize_title( $com->comment_author ) . '"></span>' . $modifiedcontent;
+    return '<div class="ctl-author" data-name="' . sanitize_title( $com->comment_author ) . '">' . $modifiedcontent . '</div>';
 }
 add_filter('comment_text', 'ctl_modify_comment_text', 10, 2);
 
