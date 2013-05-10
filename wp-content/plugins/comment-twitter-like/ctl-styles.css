@@ -30,3 +30,9 @@
     background: #4183C4;
     text-decoration: none;
 }
+
+.ctl-button{
+    border:none;
+    background:#ddd;
+    padding:0.25em 0.5em;
+}

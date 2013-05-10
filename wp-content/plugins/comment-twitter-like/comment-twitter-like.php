@@ -10,7 +10,7 @@ License: GPLv2 or later
 */
 DEFINE( 'CTL_PLUGIN_URL', trailingslashit( WP_PLUGIN_URL ) . basename( dirname( __FILE__ ) ) );
 DEFINE( 'CTL_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
-global $ctlAuthors;
+global $ctlAuthors, $ctlAuthorsOrdered;
 
 /**
 LOAD JS ON FRONT OFFICE
@@ -34,12 +34,21 @@ add_action( 'wp_enqueue_scripts', 'ctl_enqueue_comments_scripts' ); //wp_enqueue
 CATCH NAME IN COMMENTS & ADD ANCHOR LINK (OR OPACITY)
 */
 function ctl_modify_comment_text( $content, $com ) {
-    global $ctlAuthors;
-    $ctlAuthors[] = array( 'val' => sanitize_title( $com->comment_author ), 'meta' => $com->comment_author );
+    global $ctlAuthors, $ctlAuthorsOrdered;
+
+    if( ! is_array( $ctlAuthors ) )
+        $ctlAuthors = array();
+
+    $newEntry = array( 'val' => sanitize_title( $com->comment_author ), 'meta' => $com->comment_author );
+    if( ! in_array( $newEntry, $ctlAuthors ) ) {
+        $ctlAuthors[] = $newEntry;
+        $ctlAuthorsOrdered[ sanitize_title( $com->comment_author ) ] = $com->comment_author;
+    }
 
     //Rearrange content
-    $modifiedcontent = preg_replace('/\@([a-zA-Z0-9\-]*)$/', '<button data-cible="$1">$1</button>', $content);
-    return '<span class="ctl-author" data-name="' . sanitize_title( $com->comment_author ) . '"></span>' . $content;
+    $modifiedcontent = preg_replace_callback('/\@([a-zA-Z0-9-]*)/', 'ctl_comment_callback', $content);
+
+    return '<span class="ctl-author" data-name="' . sanitize_title( $com->comment_author ) . '"></span>' . $modifiedcontent;
 }
 add_filter('comment_text', 'ctl_modify_comment_text', 10, 2);
 
@@ -48,10 +57,16 @@ RETRIEVE AUTHORS NAMES ON THE OTHER SIDE (SAVING ONE)
 */
 function printnames(){
     global $ctlAuthors;
-    wp_localize_script( 'ctl-comment-script', 'ctlAuthors', $ctlAuthors);
+    wp_localize_script( 'ctl-comment-script', 'ctlAuthors', $ctlAuthors );
 
-    $data    = serialize( $ctlAuthors ); 
-    $encoded = htmlentities( $data );
-    echo '<input type="hidden" name="ctlAuthors" value="' . $encoded . '">';
+    $authors = array();
+    foreach( $ctlAuthors as $a)
+        $authors[ $a[ 'val' ] ] = $a[ 'meta' ];
+    echo '<input type="hidden" name="ctlAuthors" value="' . json_encode( $authors ) . '">';
 }
 add_action('comment_form','printnames');
+
+function ctl_comment_callback( $matches ) {
+    global $ctlAuthorsOrdered;
+    return '<button data-cible="$1" class="ctl-button">@' . $ctlAuthorsOrdered[ $matches[1] ] . ' :</button>';
+}
