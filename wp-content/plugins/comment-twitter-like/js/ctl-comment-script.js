@@ -28,6 +28,9 @@ jQuery(document).ready(function($){
             var code = (e.keyCode ? e.keyCode : e.which);
             autosuggestContent += String.fromCharCode(code);
             console.log(autosuggestContent);
+            //Filtre authors
+
+            //Break
             if(code == 32) {
                 autosuggest = false;
                 $('#ctl-authors-list').css({'display':'none'});
