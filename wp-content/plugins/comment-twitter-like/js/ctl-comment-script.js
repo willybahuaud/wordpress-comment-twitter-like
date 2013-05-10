@@ -15,7 +15,7 @@ jQuery(document).ready(function($){
 
     //SCROLL TO LAST COMMS
     $('.ctl-button').on('click',function(){
-        var $prev = $('.author[data-name="' + $(this).attr('data-cible') +'"]:eq(0)');
+        var $prev = $('.ctl-author[data-name="' + $(this).attr('data-cible') +'"]:eq(0)');
 
         $('body,html').animate({scrollTop:$prev.offset().top}, 200);
     });
