@@ -36,12 +36,22 @@ CATCH NAME IN COMMENTS & ADD ANCHOR LINK (OR OPACITY)
 function ctl_modify_comment_text( $content, $com ) {
     global $ctlAuthors;
     $ctlAuthors[] = array( 'val' => sanitize_title( $com->comment_author ), 'meta' => $com->comment_author );
+
+    //Rearrange content
+    $modifiedcontent = preg_replace('/\@([a-zA-Z0-9\-]*)$/', '<button data-cible="$1">$1</button>', $content);
     return '<span class="ctl-author" data-name="' . sanitize_title( $com->comment_author ) . '"></span>' . $content;
 }
 add_filter('comment_text', 'ctl_modify_comment_text', 10, 2);
 
+/**
+RETRIEVE AUTHORS NAMES ON THE OTHER SIDE (SAVING ONE)
+*/
 function printnames(){
     global $ctlAuthors;
     wp_localize_script( 'ctl-comment-script', 'ctlAuthors', $ctlAuthors);
+
+    $data    = serialize( $ctlAuthors ); 
+    $encoded = htmlentities( $data );
+    echo '<input type="hidden" name="ctlAuthors" value="' . $encoded . '">';
 }
-add_action('wp_footer','printnames');
+add_action('comment_form','printnames');
