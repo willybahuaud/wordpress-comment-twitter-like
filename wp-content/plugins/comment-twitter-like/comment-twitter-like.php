@@ -52,6 +52,11 @@ function ctl_modify_comment_text( $content, $com ) {
 }
 add_filter('comment_text', 'ctl_modify_comment_text', 10, 2);
 
+function ctl_comment_callback( $matches ) {
+    global $ctlAuthorsOrdered;
+    return '<button data-cible="' . $matches[1] . '" class="ctl-button">@' . $ctlAuthorsOrdered[ $matches[1] ] . ' :</button>';
+}
+
 /**
 RETRIEVE AUTHORS NAMES ON THE OTHER SIDE (SAVING ONE)
 */
@@ -65,8 +70,3 @@ function printnames(){
     echo '<input type="hidden" name="ctlAuthors" value="' . json_encode( $authors ) . '">';
 }
 add_action('comment_form','printnames');
-
-function ctl_comment_callback( $matches ) {
-    global $ctlAuthorsOrdered;
-    return '<button data-cible="$1" class="ctl-button">@' . $ctlAuthorsOrdered[ $matches[1] ] . ' :</button>';
-}

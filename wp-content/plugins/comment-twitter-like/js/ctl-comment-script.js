@@ -1,10 +1,4 @@
 jQuery(document).ready(function($){
-    //ARRAY OF AUTHORS
-    // var ctlAuthors = new Array;
-    // $('.ctl-author').each(function(){
-    //     ctlAuthors.push({val : $(this).attr('data-name'), meta : $(this).attr('data-real-name')});
-    // });
-
     //ADD AUTOSUGGEST
     var customItemTemplate = "<div><span />&nbsp;<small /></div>";
 
@@ -18,4 +12,11 @@ jQuery(document).ready(function($){
 
     $comment = $('#comment');
     $comment.sew({values: ctlAuthors, elementFactory: elementFactory});
+
+    //SCROLL TO LAST COMMS
+    $('.ctl-button').on('click',function(){
+        var $prev = $('.author[data-name="' + $(this).attr('data-cible') +'"]:eq(0)');
+
+        $('body,html').animate({scrollTop:$prev.offset().top}, 200);
+    });
 });
