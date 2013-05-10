@@ -9,17 +9,19 @@ jQuery(document).ready(function($){
     var autosuggest = false;
     var autosuggestContent = '';
 
-    var authorsList = '<ul id="ctl-authors-list" style="position:absolute;">';
+    var authorsList = '<ul id="ctl-authors-list" style="position:absolute;display:none;width:200px;">';
     for(ctlAuthor in ctlAuthors)
         authorsList += '<li data-key="' + ctlAuthor + '">' + ctlAuthors[ctlAuthor] + '</li>';
     authorsList += '</ul>';
     $(authorsList).appendTo($('body'));
 
-    $('#comment').on('keypress',function(e){
+    $comment = $('#comment');
+    $comment.on('keypress',function(e){
         if(autosuggest == false){
             var code = (e.keyCode ? e.keyCode : e.which);
             if(code == 64) {
                 autosuggest = true;
+                $('#ctl-authors-list').css({'display':'block','top':$comment.offset().top, 'left':$comment.offset().left-200 });
             }
         }
         if(autosuggest == true){
@@ -28,6 +30,7 @@ jQuery(document).ready(function($){
             console.log(autosuggestContent);
             if(code == 32) {
                 autosuggest = false;
+                $('#ctl-authors-list').css({'display':'none'});
             }
         }
     });
